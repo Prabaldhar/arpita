@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Arpita</title>
+    <!-- Importing romantic fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET & BASE --- */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Quicksand', sans-serif;
+            /* Prevent scrolling on mobile */
+            touch-action: none;
+        }
+        /* --- THE MAGICAL SCENERY --- */
+        
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Romantic Twilight Gradient */
+            background: linear-gradient(to bottom, #141E30 0%, #243B55 40%, #8E44AD 80%, #F39C12 100%);
+            z-index: -1;
+            overflow: hidden;
+        }
+        /* Moon/Glow */
+        
+        .moon {
+            position: absolute;
+            top: 15%;
+            right: 20%;
+            width: 80px;
+            height: 80px;
+            background: #fdfbf7;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #fdfbf7, 0 0 80px #bca0dc;
+            animation: float 6s ease-in-out infinite alternate;
+        }
+        /* Stars */
+        
+        .stars-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: twinkle 3s infinite;
+        }
+        /* Clouds - Tinted for Night */
+        
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            opacity: 0.6;
+            filter: blur(8px);
+        }
+        
+        .cloud::after,
+        .cloud::before {
+            content: '';
+            position: absolute;
+            background: inherit;
+            border-radius: 50%;
+        }
+        
+        .c1 {
+            width: 150px;
+            height: 40px;
+            top: 20%;
+            left: -150px;
+            animation: floatCloud 45s linear infinite;
+        }
+        
+        .c1::after {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            left: 20px;
+        }
+        
+        .c1::before {
+            width: 50px;
+            height: 50px;
+            top: -20px;
+            left: 60px;
+        }
+        
+        .c2 {
+            width: 120px;
+            height: 35px;
+            top: 35%;
+            left: -150px;
+            animation: floatCloud 35s linear infinite 5s;
+            transform: scale(0.8);
+        }
+        
+        .c2::after {
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            left: 15px;
+        }
+        /* Mountains & Hills - Silhouettes */
+        
+        .mountain {
+            position: absolute;
+            bottom: 25%;
+            width: 0;
+            height: 0;
+            border-left: 200px solid transparent;
+            border-right: 200px solid transparent;
+            border-bottom: 350px solid #1a1a2e;
+            /* Dark Silhouette */
+            opacity: 0.7;
+        }
+        
+        .m1 {
+            left: -5%;
+            transform: scale(1.1);
+        }
+        
+        .m2 {
+            right: 10%;
+            border-bottom-color: #16213e;
+            transform: scale(1.3);
+            bottom: 20%;
+        }
+        
+        .hill {
+            position: absolute;
+            border-radius: 50%;
+            box-shadow: inset -20px 0px 40px rgba(0, 0, 0, 0.3);
+        }
+        /* Layered Dark Greens/Purples for depth */
+        
+        .h1 {
+            width: 120%;
+            height: 500px;
+            bottom: -280px;
+            left: -10%;
+            z-index: 1;
+            background: #2d3436;
+        }
+        
+        .h2 {
+            width: 120%;
+            height: 600px;
+            bottom: -400px;
+            right: -20%;
+            z-index: 2;
+            background: #2c3e50;
+        }
+        
+        .h3 {
+            width: 150%;
+            height: 450px;
+            bottom: -320px;
+            left: -20%;
+            z-index: 3;
+            background: #0f2027;
+            /* Darkest foreground */
+        }
+        /* Fireflies */
+        
+        .firefly {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #f1c40f;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #f1c40f;
+            animation: fly 10s linear infinite;
+            z-index: 5;
+            opacity: 0;
+        }
+        /* --- UI CARD --- */
+        
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            perspective: 1000px;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .card {
+            background: rgba(25, 25, 35, 0.75);
+            /* Slightly darker for better contrast */
+            backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(243, 156, 18, 0.3);
+            /* Glowy border */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 350px;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #fff;
+        }
+        
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #F39C12;
+            /* Golden Text */
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            line-height: 1.1;
+        }
+        
+        p {
+            color: #ecf0f1;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+        
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            height: 50px;
+            align-items: center;
+        }
+        
+        button {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            /* Better touch targets */
+            min-width: 100px;
+            touch-action: manipulation;
+        }
+        
+        .yes-btn {
+            background: #e74c3c;
+            color: white;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.6);
+            z-index: 10;
+        }
+        
+        .yes-btn:hover,
+        .yes-btn:active {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+        
+        .no-btn {
+            background: #95a5a6;
+            color: #2c3e50;
+            position: absolute;
+            left: 55%;
+        }
+        
+        #proposal-content,
+        #success-content {
+            display: none;
+        }
+        /* --- MOBILE ADJUSTMENTS --- */
+        
+        @media (max-width: 768px) {
+            .moon {
+                width: 60px;
+                height: 60px;
+                top: 10%;
+                right: 10%;
+            }
+            .mountain {
+                border-left-width: 100px;
+                border-right-width: 100px;
+                border-bottom-width: 200px;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+            p {
+                font-size: 1rem;
+                margin-bottom: 20px;
+            }
+            .card {
+                padding: 30px 20px;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+        /* Animations */
+        
+        @keyframes floatCloud {
+            0% {
+                transform: translateX(-200px);
+            }
+            100% {
+                transform: translateX(120vw);
+            }
+        }
+        
+        @keyframes twinkle {
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+        
+        @keyframes fly {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(100px, -150px);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            80% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        /* Canvas for Petals/Confetti */
+        
+        #petalCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SCENERY LAYER -->
+    <div class="scene">
+        <div class="moon"></div>
+
+        <div class="stars-container" id="stars"></div>
+
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+
+        <div class="mountain m1"></div>
+        <div class="mountain m2"></div>
+
+        <div class="hill h1"></div>
+        <div class="hill h2"></div>
+        <div class="hill h3"></div>
+
+        <!-- Fireflies Container -->
+        <div id="fireflies"></div>
+    </div>
+
+    <!-- UI LAYER -->
+    <canvas id="petalCanvas"></canvas>
+
+    <div class="container">
+        <div class="card" id="main-card">
+
+            <!-- STAGE 1: INTRO -->
+            <div id="intro-content">
+                <div style="font-size: 4rem; margin-bottom: 10px; text-shadow: 0 0 20px rgba(255,255,255,0.5);">💌</div>
+                <h1>Hey Arpita</h1>
+                <p>There's something magical I need to ask...</p>
+                <button class="yes-btn" onclick="showProposal()">Open Letter</button>
+            </div>
+
+            <!-- STAGE 2: PROPOSAL -->
+            <div id="proposal-content">
+                <h1>Arpita...</h1>
+                <p>Under this digital sky...<br>Will you make me the happiest person and be my Valentine?</p>
+                <div class="btn-group">
+                    <button class="yes-btn" onclick="acceptLove()">YES! ❤️</button>
+                    <!-- Added onTouchStart for mobile support -->
+                    <button class="no-btn" id="noBtn" onmouseover="dodgeCursor()" ontouchstart="dodgeCursor()">No</button>
+                </div>
+            </div>
+
+            <!-- STAGE 3: SUCCESS -->
+            <div id="success-content">
+                <h1>I Knew It! ❤️</h1>
+                <p>You light up my world more than these stars.<br>(Send me a screenshot!)</p>
+                <div style="font-size: 3rem;">💑</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- STARS & FIREFLIES LOGIC ---
+        function createStars() {
+            const container = document.getElementById('stars');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        function createFireflies() {
+            const container = document.getElementById('fireflies');
+            setInterval(() => {
+                const fly = document.createElement('div');
+                fly.className = 'firefly';
+                fly.style.left = Math.random() * 100 + 'vw';
+                fly.style.top = (Math.random() * 50 + 50) + 'vh'; // Lower half
+                fly.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                container.appendChild(fly);
+
+                setTimeout(() => fly.remove(), 10000);
+            }, 500);
+        }
+
+        createStars();
+        createFireflies();
+
+        // --- INTERACTION LOGIC ---
+
+        function showProposal() {
+            document.getElementById('intro-content').style.display = 'none';
+            const proposal = document.getElementById('proposal-content');
+            proposal.style.display = 'block';
+            proposal.style.animation = 'popIn 0.5s ease-out';
+        }
+
+        function dodgeCursor() {
+            const btn = document.getElementById('noBtn');
+            const card = document.getElementById('main-card');
+
+            // Mobile-safe logic: Ensure button doesn't go off-screen
+            // We calculate the available area within the card or viewport
+
+            // Get viewport dimensions
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
+            // Simple random movement, but constrained
+            // We'll move it relative to its current position but keep it generally centered
+            // Generating a position within a range relative to the center of the button group
+
+            // Define a range (smaller on mobile)
+            const range = viewportWidth < 600 ? 100 : 250;
+
+            const x = (Math.random() - 0.5) * range;
+            const y = (Math.random() - 0.5) * range;
+
+            btn.style.transform = `translate(${x}px, ${y}px)`;
+
+            // Adding a rotation for fun
+            const rot = (Math.random() - 0.5) * 45;
+            btn.style.transform += ` rotate(${rot}deg)`;
+        }
+
+        function acceptLove() {
+            document.getElementById('proposal-content').style.display = 'none';
+            const success = document.getElementById('success-content');
+            success.style.display = 'block';
+            success.style.animation = 'popIn 0.5s ease-out';
+            startPetalRain();
+        }
+
+        // --- CANVAS PETALS ---
+        const canvas = document.getElementById('petalCanvas');
+        const ctx = canvas.getContext('2d');
+        let petals = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function createPetal() {
+            return {
+                x: Math.random() * canvas.width,
+                y: -20,
+                size: Math.random() * 15 + 10,
+                speed: Math.random() * 2 + 1,
+                velX: Math.random() * 2 - 1,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 2 - 1,
+                color: `hsl(${Math.random() * 50 + 330}, 100%, 70%)`
+            };
+        }
+
+        function startPetalRain() {
+            for (let i = 0; i < 60; i++) petals.push(createPetal());
+            animatePetals();
+        }
+
+        function animatePetals() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (petals.length < 150 && Math.random() < 0.1) petals.push(createPetal());
+
+            for (let i = 0; i < petals.length; i++) {
+                let p = petals[i];
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(p.size / 2, -p.size / 2, p.size, 0, 0, p.size);
+                ctx.bezierCurveTo(-p.size, 0, -p.size / 2, -p.size / 2, 0, 0);
+                ctx.fill();
+                ctx.restore();
+
+                p.y += p.speed;
+                p.x += p.velX + Math.sin(p.y * 0.01);
+                p.rotation += p.rotationSpeed;
+
+                if (p.y > canvas.height) petals[i] = createPetal();
+            }
+            requestAnimationFrame(animatePetals);
+        }
+    </script>
+</body>
+
+</html>
